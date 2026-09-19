@@ -44,9 +44,8 @@ export function openWork2Dialog(onSubmit) {
   const closeDialog = () => backdrop.remove();
 
   confirmButton.addEventListener('click', () => {
-    const value = Number(slider.value);
     if (typeof onSubmit === 'function') {
-      onSubmit(value);
+      onSubmit(slider.value);
     }
     closeDialog();
   });

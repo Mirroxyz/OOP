@@ -15,6 +15,6 @@ document.getElementById('menu1').addEventListener('click', () => {
 
 document.getElementById('menu2').addEventListener('click', () => {
   openWork2Dialog((value) => {
-    showResult(String(value));
+    showResult(value);
   });
 });
