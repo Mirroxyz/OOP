@@ -15,6 +15,18 @@ let currentTool = 'point';
 let isDrawing = false;
 let startX = 0, startY = 0;
 
+const shapeTypes = {
+    point: PointShape,
+    line: LineShape,
+    rect: RectShape,
+    ellipse: EllipseShape
+};
+
+function createShape(tool) {
+    const ShapeClass = shapeTypes[tool];
+    return ShapeClass ? new ShapeClass() : null;
+}
+
 function resizeCanvas() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight - menubar.offsetHeight;
@@ -66,7 +78,7 @@ canvas.addEventListener('mousedown', (e) => {
     isDrawing = true;
 
     if (currentTool === 'point') {
-        let point = new PointShape();
+        const point = createShape(currentTool);
         point.setData(startX, startY, startX, startY);
         shapes.push(point);
         isDrawing = false;
@@ -80,12 +92,7 @@ canvas.addEventListener('mousemove', (e) => {
     const pos = getMousePos(e);
     redrawAll(); 
 
-    let tempShape = null;
-    switch (currentTool) {
-        case 'line': tempShape = new LineShape(); break;
-        case 'rect': tempShape = new RectShape(); break;
-        case 'ellipse': tempShape = new EllipseShape(); break;
-    }
+    const tempShape = createShape(currentTool);
 
     if (tempShape) {
         tempShape.setData(startX, startY, pos.x, pos.y);
@@ -98,13 +105,7 @@ canvas.addEventListener('mouseup', (e) => {
     isDrawing = false;
     
     const pos = getMousePos(e);
-    let newShape = null;
-    
-    switch (currentTool) {
-        case 'line': newShape = new LineShape(); break;
-        case 'rect': newShape = new RectShape(); break;
-        case 'ellipse': newShape = new EllipseShape(); break;
-    }
+    const newShape = createShape(currentTool);
 
     if (newShape) {
         newShape.setData(startX, startY, pos.x, pos.y);
