@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 2</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="menubar">
+        <div class="menu-item">Файл</div>
+        <div class="menu-item dropdown" id="menu-objects">
+            Об'єкти
+            <div class="dropdown-content" id="dropdown-objects">
+                <button id="btn-point" class="active" onclick="setTool('point')">Крапка</button>
+                <button id="btn-line" onclick="setTool('line')">Лінія</button>
+                <button id="btn-rect" onclick="setTool('rect')">Прямокутник</button>
+                <button id="btn-ellipse" onclick="setTool('ellipse')">Еліпс</button>
+            </div>
+        </div>
+        <div class="menu-item">Довідка</div>
+    </div>
+
+    <canvas id="editorCanvas"></canvas>
+
+    <script src="script.js"></script>
+</body>
+</html>
