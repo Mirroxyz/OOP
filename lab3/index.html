@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 3 - Графічний редактор</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="app-header">
+        <div id="menubar" class="menubar" role="menubar" aria-label="Головне меню">
+            <div class="menu-item" role="menuitem" tabindex="0">Файл</div>
+            <div class="menu-item dropdown" id="menu-objects" role="menuitem" tabindex="0"
+                 aria-haspopup="true" aria-expanded="false">
+                Об'єкти
+                <div class="dropdown-content" id="dropdown-objects" role="menu">
+                    <button type="button" data-tool="point" role="menuitem">Крапка</button>
+                    <button type="button" data-tool="line" role="menuitem">Лінія</button>
+                    <button type="button" data-tool="rect" role="menuitem">Прямокутник</button>
+                    <button type="button" data-tool="ellipse" role="menuitem">Еліпс</button>
+                </div>
+            </div>
+            <div class="menu-item" role="menuitem" tabindex="0">Довідка</div>
+        </div>
+
+        <div id="toolbar" class="toolbar" role="toolbar" aria-label="Панель інструментів">
+            <button class="tool-button active" type="button" data-tool="point"
+                    title="Крапка" aria-label="Крапка">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.5"></circle></svg>
+            </button>
+            <button class="tool-button" type="button" data-tool="line"
+                    title="Лінія" aria-label="Лінія">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="5" y1="19" x2="19" y2="5"></line></svg>
+            </button>
+            <button class="tool-button" type="button" data-tool="rect"
+                    title="Прямокутник" aria-label="Прямокутник">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="6" width="16" height="12"></rect></svg>
+            </button>
+            <button class="tool-button" type="button" data-tool="ellipse"
+                    title="Еліпс" aria-label="Еліпс">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="12" rx="8" ry="5"></ellipse></svg>
+            </button>
+        </div>
+    </header>
+
+    <main class="workspace">
+        <canvas id="editorCanvas" aria-label="Полотно графічного редактора"></canvas>
+    </main>
+
+    <script type="module" src="script.js"></script>
+</body>
+</html>
