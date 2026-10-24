@@ -1,11 +1,4 @@
-const TYPE_NAMES = {
-    point: 'Крапка',
-    line: 'Лінія',
-    rect: 'Прямокутник',
-    ellipse: 'Еліпс',
-    dottedLine: 'Лінія з кружечками',
-    cube: 'Каркас куба'
-};
+import { TYPE_NAMES } from './shapes.js';
 
 export class MyTable {
     constructor({ onSelect, onDelete, onClose }) {
@@ -39,15 +32,15 @@ export class MyTable {
                 <div class="table-actions">
                     <button type="button" class="delete-object">Вилучити вибраний</button>
                 </div>
-                <p class="table-hint">Клацніть рядок, щоб виділити об'єкт на полотні.</p>
             </div>`;
         document.body.append(this.dialog);
         this.body = this.dialog.querySelector('tbody');
         this.dialog.querySelector('.close-table').addEventListener('click', () => this.close());
         this.dialog.querySelector('.delete-object').addEventListener('click', () => {
             if (this.selectedIndex >= 0) {
-                this.onDelete(this.selectedIndex);
+                const index = this.selectedIndex;
                 this.selectedIndex = -1;
+                this.onDelete(index);
             }
         });
         this.dialog.addEventListener('keydown', (event) => {

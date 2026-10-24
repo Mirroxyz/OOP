@@ -1,3 +1,12 @@
+export const TYPE_NAMES = {
+    point: 'Крапка',
+    line: 'Лінія',
+    rect: 'Прямокутник',
+    ellipse: 'Еліпс',
+    dottedLine: 'Лінія з кружечками',
+    cube: 'Каркас куба'
+};
+
 export class Shape {
     constructor(x1 = 0, y1 = 0, x2 = 0, y2 = 0) {
         this.x1 = x1; this.y1 = y1; this.x2 = x2; this.y2 = y2;
@@ -6,10 +15,20 @@ export class Shape {
     setData(x1, y1, x2, y2) {
         this.x1 = x1; this.y1 = y1; this.x2 = x2; this.y2 = y2;
     }
+    get type() { return 'shape'; }
+    getSelectionBounds() {
+        return {
+            left: Math.min(this.x1, this.x2),
+            top: Math.min(this.y1, this.y2),
+            right: Math.max(this.x1, this.x2),
+            bottom: Math.max(this.y1, this.y2)
+        };
+    }
     show(_context) { throw new Error('Метод show() має бути реалізований у похідному класі'); }
 }
 
 export class PointShape extends Shape {
+    get type() { return 'point'; }
     show(context) {
         context.fillStyle = this.isRubberBand ? '#d22' : '#111';
         context.fillRect(this.x1 - 2, this.y1 - 2, 4, 4);
@@ -17,6 +36,7 @@ export class PointShape extends Shape {
 }
 
 export class LineShape extends Shape {
+    get type() { return 'line'; }
     show(context) {
         context.beginPath(); context.moveTo(this.x1, this.y1); context.lineTo(this.x2, this.y2);
         context.strokeStyle = this.isRubberBand ? '#d22' : '#111'; context.lineWidth = 2; context.stroke();
@@ -25,11 +45,21 @@ export class LineShape extends Shape {
 
 export class RectShape extends Shape {
     constructor() { super(); this.fillShape = true; }
+    get type() { return 'rect'; }
     getBounds() {
         const oppositeX = 2 * this.x1 - this.x2;
         const oppositeY = 2 * this.y1 - this.y2;
         return { left: Math.min(this.x2, oppositeX), top: Math.min(this.y2, oppositeY),
             width: Math.abs(this.x2 - oppositeX), height: Math.abs(this.y2 - oppositeY) };
+    }
+    getSelectionBounds() {
+        const bounds = this.getBounds();
+        return {
+            left: bounds.left,
+            top: bounds.top,
+            right: bounds.left + bounds.width,
+            bottom: bounds.top + bounds.height
+        };
     }
     show(context) {
         const b = this.getBounds(); context.beginPath(); context.rect(b.left, b.top, b.width, b.height);
@@ -39,6 +69,7 @@ export class RectShape extends Shape {
 }
 
 export class EllipseShape extends Shape {
+    get type() { return 'ellipse'; }
     getBounds() {
         return { left: Math.min(this.x1, this.x2), top: Math.min(this.y1, this.y2),
             width: Math.abs(this.x2 - this.x1), height: Math.abs(this.y2 - this.y1) };
@@ -52,6 +83,7 @@ export class EllipseShape extends Shape {
 
 export class DottedLineShape extends Shape {
     constructor() { super(); this.line = new LineShape(); this.marker = new EllipseShape(); }
+    get type() { return 'dottedLine'; }
     show(context) {
         this.line.setData(this.x1, this.y1, this.x2, this.y2); this.line.isRubberBand = this.isRubberBand; this.line.show(context);
         this.drawMarker(context, this.x1, this.y1); this.drawMarker(context, this.x2, this.y2);
@@ -64,6 +96,7 @@ export class DottedLineShape extends Shape {
 
 export class CubeShape extends Shape {
     constructor() { super(); this.edge = new LineShape(); this.face = new RectShape(); }
+    get type() { return 'cube'; }
     show(context) {
         const left = Math.min(this.x1, this.x2); const top = Math.min(this.y1, this.y2);
         const width = Math.abs(this.x2 - this.x1); const height = Math.abs(this.y2 - this.y1);

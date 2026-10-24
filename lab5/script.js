@@ -1,19 +1,14 @@
 import {
-    PointShape, LineShape, RectShape, EllipseShape, DottedLineShape, CubeShape
+    PointShape, LineShape, RectShape, EllipseShape, DottedLineShape, CubeShape, TYPE_NAMES
 } from './shapes.js';
 import { MyTable } from './table.js';
 
-const TYPE_NAMES = {
-    point: 'Крапка', line: 'Лінія', rect: 'Прямокутник', ellipse: 'Еліпс',
-    dottedLine: 'Лінія з кружечками', cube: 'Каркас куба'
-};
-
 class MyEditor {
-    static instance = null;
+    static #instance = null;
     static MAX_SHAPES = 125;
 
     constructor() {
-        if (MyEditor.instance) {
+        if (MyEditor.#instance) {
             throw new Error('MyEditor є Singleton і вже створений');
         }
         this.canvas = document.getElementById('editorCanvas');
@@ -35,7 +30,10 @@ class MyEditor {
         this.table = new MyTable({
             onSelect: (index) => this.selectShape(index),
             onDelete: (index) => this.deleteShape(index),
-            onClose: () => this.redrawAll()
+            onClose: () => {
+                this.selectedIndex = -1;
+                this.redrawAll();
+            }
         });
         this.bindEvents();
         this.resizeCanvas();
@@ -43,10 +41,10 @@ class MyEditor {
     }
 
     static getInstance() {
-        if (!MyEditor.instance) {
-            MyEditor.instance = new MyEditor();
+        if (!MyEditor.#instance) {
+            MyEditor.#instance = new MyEditor();
         }
-        return MyEditor.instance;
+        return MyEditor.#instance;
     }
 
     listen(target, type, handler) {
@@ -123,7 +121,10 @@ class MyEditor {
 
     getMousePosition(event) {
         const bounds = this.canvas.getBoundingClientRect();
-        return { x: event.clientX - bounds.left, y: event.clientY - bounds.top };
+        return {
+            x: Math.round(event.clientX - bounds.left),
+            y: Math.round(event.clientY - bounds.top)
+        };
     }
 
     createShape(tool = this.currentTool) {
@@ -139,10 +140,11 @@ class MyEditor {
     }
 
     drawSelection(shape) {
-        const left = Math.min(shape.x1, shape.x2) - 8;
-        const top = Math.min(shape.y1, shape.y2) - 8;
-        const width = Math.abs(shape.x2 - shape.x1) + 16;
-        const height = Math.abs(shape.y2 - shape.y1) + 16;
+        const bounds = shape.getSelectionBounds();
+        const left = bounds.left - 8;
+        const top = bounds.top - 8;
+        const width = bounds.right - bounds.left + 16;
+        const height = bounds.bottom - bounds.top + 16;
         this.context.save();
         this.context.strokeStyle = '#1677c8';
         this.context.lineWidth = 2;
@@ -190,7 +192,6 @@ class MyEditor {
     addShape(endPoint) {
         const shape = this.createShape();
         shape.setData(this.startPoint.x, this.startPoint.y, endPoint.x, endPoint.y);
-        shape.type = this.currentTool;
         this.shapes.push(shape);
         this.table.update(this.shapes);
         this.redrawAll();
@@ -231,7 +232,6 @@ class MyEditor {
             this.shapes = loaded.map(([type, x1, y1, x2, y2]) => {
                 const shape = this.createShape(type);
                 shape.setData(Number(x1), Number(y1), Number(x2), Number(y2));
-                shape.type = type;
                 return shape;
             });
             this.selectedIndex = -1;
@@ -252,7 +252,7 @@ class MyEditor {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.canvas = null;
         this.context = null;
-        MyEditor.instance = null;
+        MyEditor.#instance = null;
     }
 }
 

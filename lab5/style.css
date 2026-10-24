@@ -13,6 +13,12 @@ body { margin: 0; height: 100vh; overflow: hidden; background: #fff; color: #222
 .dropdown-content button { display: block; width: 100%; padding: 7px 14px; border: 0; background: transparent;
     text-align: left; cursor: pointer; font: inherit; }
 .dropdown-content button:hover, .dropdown-content button.active { background: #dceeff; }
+.dropdown-content button.active::before {
+    content: "✓";
+    display: inline-block;
+    width: 20px;
+    color: #075da8;
+}
 .toolbar { height: 44px; padding: 4px 10px; gap: 4px; border-top: 1px solid #d2d2d2; background: #f7f7f7; }
 .tool-button { width: 34px; height: 34px; padding: 5px; border: 1px solid transparent; border-radius: 3px; background: transparent; cursor: pointer; }
 .tool-button:hover, .tool-button.active { border-color: #8bb8e6; background: #dceeff; }

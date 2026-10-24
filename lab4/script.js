@@ -184,6 +184,5 @@ class MyEditor {
     }
 }
 
-// Ж=24: MyEditor створюється динамічно та знищується перед завершенням сторінки.
 const editor = new MyEditor();
 window.addEventListener('beforeunload', () => editor.destroy(), { once: true });
